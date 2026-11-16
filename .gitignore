@@ -3,7 +3,6 @@ __pycache__/
 *.py[cod]
 *$py.class
 .Python
-file_api_app/
 .venv/
 venv/
 env/
@@ -23,6 +22,9 @@ htmlcov/
 coverage.xml
 .ipynb_checkpoints/
 **/site-packages/
+**/bin/
+**/lib64
+pyvenv.cfg
 
 # Python cache
 __pycache__/

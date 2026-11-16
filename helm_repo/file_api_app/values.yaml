@@ -1,0 +1,70 @@
+replicaCount: 2
+
+autoscaling:
+  minReplicas: 2
+  maxReplicas: 2
+  averageUtilization: 80
+
+container:
+  name: file-api
+  port: 8000
+  env:
+    name: AWS_S3_ENC
+    key: AWS_S3_ENC
+
+rollingUpdate:
+  maxSurge: 0
+  maxUnavailable: 1
+
+image:
+  repository: 731770490737.dkr.ecr.ap-southeast-2.amazonaws.com/fast-api-app-repo
+  tag: 1.0.1
+  pullPolicy: Always
+
+serviceAccount:
+  roleArn: ""
+
+config:
+  AWS_REGION: ap-southeast-2
+  AWS_DEFAULT_REGION: ap-southeast-2
+  AWS_S3_BUCKET: "file-api-files-2026"
+  VERSION: "1.0.0"
+
+externalSecrets:
+  apiVersion: external-secrets.io/v1
+  region: ap-southeast-2
+  refreshInterval: 1h
+  secretKey: AWS_S3_ENC
+  remoteKey: encryption-key
+  # Leave empty for a plaintext secret; set to AWS_S3_ENC for a JSON secret.
+  property: ""
+
+service:
+  port: 80
+
+ingress:
+  scheme: internet-facing
+  host: ""
+  annotations: {}
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 256Mi
+
+probes:
+  liveness:
+    httpGet:
+      path: /health
+      port: http
+    initialDelaySeconds: 10
+    periodSeconds: 10
+  readiness:
+    httpGet:
+      path: /health
+      port: http
+    initialDelaySeconds: 5
+    periodSeconds: 5
