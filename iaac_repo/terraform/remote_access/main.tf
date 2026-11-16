@@ -194,7 +194,23 @@ resource "aws_instance" "eks_access_host" {
     echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check
     install -m 0755 kubectl /usr/local/bin/kubectl
 
+    # Configure EKS connectivity
+    echo "Configuring EKS connectivity..."
+
+    mkdir -p /etc/kubernetes
+
+    aws eks update-kubeconfig \
+      --name '${var.cluster_name}' \
+      --region '${data.aws_region.current.region}' \
+      --kubeconfig /etc/kubernetes/eks-config
+
+    chmod 644 /etc/kubernetes/eks-config
+
+    export KUBECONFIG=/etc/kubernetes/eks-config
+
     # Install Helm
+    echo "Installing Helm..."
+
     curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 \
       -o get-helm-3
     bash get-helm-3
@@ -204,6 +220,31 @@ resource "aws_instance" "eks_access_host" {
 
     # Install ASP.NET Core 10 Runtime
     dnf install -y aspnetcore-runtime-10.0
+
+    # Install GHA Runner
+
+    mkdir -p /opt/actions-runner
+    curl -fsSL https://github.com/actions/runner/releases/download/v2.338.2/actions-runner-linux-x64-2.338.2.tar.gz \
+      -o actions-runner-linux-x64-2.338.2.tar.gz
+    tar -xzf actions-runner-linux-x64-2.338.2.tar.gz -C /opt/actions-runner
+
+    useradd --create-home --shell /bin/bash actions-runner
+    chown -R actions-runner:actions-runner /opt/actions-runner
+    runner_token=$(printf '%s' '${base64encode(var.github_runner_token)}' | base64 --decode)
+    runner_url=$(printf '%s' '${base64encode(var.github_runner_url)}' | base64 --decode)
+    cd /opt/actions-runner
+    runuser -u actions-runner -- ./config.sh \
+      --unattended \
+      --url "$runner_url" \
+      --token "$runner_token" \
+      --name "${var.cluster_name}-access-host" \
+      --labels "eks-platform" \
+      --work _work \
+      --replace
+
+    unset runner_token
+    ./svc.sh install actions-runner
+    ./svc.sh start
 
     # Verify installations
     aws --version

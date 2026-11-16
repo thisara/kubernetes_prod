@@ -159,3 +159,19 @@ variable "github_repo_id" {
   description = "GitHub repository ID"
   type        = string
 }
+
+variable "github_runner_url" {
+  description = "GitHub repository or organization URL for the self-hosted runner."
+  type        = string
+}
+
+variable "github_runner_token" {
+  description = "Fresh GitHub runner registration token from terraform.tfvars."
+  type        = string
+  sensitive   = true
+
+  validation {
+    condition     = length(trimspace(var.github_runner_token)) > 0
+    error_message = "Set github_runner_token in terraform.tfvars before applying."
+  }
+}

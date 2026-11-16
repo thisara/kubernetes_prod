@@ -21,6 +21,9 @@ data "aws_ami" "al2023" {
 module "remote_access" {
     source = "./remote_access"
 
+    github_runner_url = var.github_runner_url
+    github_runner_token = var.github_runner_token
+
     cluster_name = var.cluster_name
     eks_cluster_arn = module.eks_cluster.eks_cluster_arn
     file_api_vpc = module.eks_cluster.vpc_id
@@ -30,7 +33,10 @@ module "remote_access" {
     eks_access_host_ami_id = data.aws_ami.al2023.id
     tags = var.tags
 
-    depends_on = [module.eks_cluster]
+    depends_on = [
+      module.eks_cluster,
+      module.devops_access
+    ]
 }
 
 module "eks_cluster" {
