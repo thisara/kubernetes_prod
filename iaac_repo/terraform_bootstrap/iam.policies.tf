@@ -118,7 +118,7 @@ data "aws_iam_policy_document" "network" {
       "ec2:DescribeVpcs",
       "ec2:StopInstances",
       "ec2:ModifyInstanceAttribute",
-      "EC2: StartInstances"
+      "ec2:StartInstances"
     ]
     resources = ["*"]
   }
