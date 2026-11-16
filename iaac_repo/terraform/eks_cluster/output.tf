@@ -42,6 +42,11 @@ output "private_route_table_id" {
   value = aws_route_table.private_rt.id
 }
 
+output "private_rt_association_ids" {
+  description = "Private route table association IDs"
+  value       = aws_route_table_association.private_association[*].id
+}
+
 #--EKS
 
 output "eks_cluster_name" {
