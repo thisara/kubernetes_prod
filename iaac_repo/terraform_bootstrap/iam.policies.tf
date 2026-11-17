@@ -344,7 +344,7 @@ data "aws_iam_policy_document" "iam" {
     actions = [
       "iam:GetOpenIDConnectProvider"
     ]
-    resources = ["arn:aws:iam::731770490737:oidc-provider/token.actions.githubusercontent.com"]
+    resources = ["arn:aws:iam::${var.account_id}::oidc-provider/token.actions.githubusercontent.com"]
   }
   statement {
     sid = "ManageGitHubOIDCProvider"
@@ -360,7 +360,7 @@ data "aws_iam_policy_document" "iam" {
       "iam:UntagOpenIDConnectProvider",
       "iam:ListOpenIDConnectProviderTags"
     ]
-    resources = ["arn:aws:iam::731770490737:oidc-provider/token.actions.githubusercontent.com"]
+    resources = ["arn:aws:iam::${var.account_id}::oidc-provider/token.actions.githubusercontent.com"]
   }
 }
 
