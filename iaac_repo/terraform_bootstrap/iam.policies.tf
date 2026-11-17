@@ -190,6 +190,7 @@ data "aws_iam_policy_document" "boundary" {
       "ec2:DetachNetworkInterface", 
       "ec2:ModifyNetworkInterfaceAttribute",
       "eks:DescribeCluster", 
+      "eks:DescribeUpdate",
       "eks-auth:AssumeRoleForPodIdentity", 
       "ecr:GetAuthorizationToken", 
       "ecr:BatchCheckLayerAvailability", 
@@ -344,7 +345,7 @@ data "aws_iam_policy_document" "iam" {
     actions = [
       "iam:GetOpenIDConnectProvider"
     ]
-    resources = ["arn:aws:iam::${var.account_id}::oidc-provider/token.actions.githubusercontent.com"]
+    resources = ["arn:aws:iam::${var.account_id}:oidc-provider/token.actions.githubusercontent.com"]
   }
   statement {
     sid = "ManageGitHubOIDCProvider"
@@ -360,7 +361,7 @@ data "aws_iam_policy_document" "iam" {
       "iam:UntagOpenIDConnectProvider",
       "iam:ListOpenIDConnectProviderTags"
     ]
-    resources = ["arn:aws:iam::${var.account_id}::oidc-provider/token.actions.githubusercontent.com"]
+    resources = ["arn:aws:iam::${var.account_id}:oidc-provider/token.actions.githubusercontent.com"]
   }
 }
 
