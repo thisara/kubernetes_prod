@@ -68,6 +68,8 @@ module "eks_cluster" {
 
 module "aws_resources" {
   source = "./aws_resources"
+
+  cluster_name = var.cluster_name
 }
 
 module "devops_access" {
