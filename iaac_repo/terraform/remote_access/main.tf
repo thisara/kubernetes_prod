@@ -195,8 +195,6 @@ resource "aws_instance" "eks_access_host" {
     install -m 0755 kubectl /usr/local/bin/kubectl
 
     # Configure EKS connectivity
-    echo "Configuring EKS connectivity..."
-
     mkdir -p /etc/kubernetes
 
     aws eks update-kubeconfig \
@@ -206,11 +204,20 @@ resource "aws_instance" "eks_access_host" {
 
     chmod 644 /etc/kubernetes/eks-config
 
-    export KUBECONFIG=/etc/kubernetes/eks-config
+    if ! id ssm-user >/dev/null 2>&1; then
+      useradd --create-home --shell /bin/bash ssm-user
+    fi
+
+    mkdir -p /home/ssm-user/.kube
+
+    ln -sfn /etc/kubernetes/eks-config \
+      /home/ssm-user/.kube/config
+
+    chown -R ssm-user:ssm-user /home/ssm-user/.kube
+
+    kubectl --kubeconfig=/etc/kubernetes/eks-config get nodes
 
     # Install Helm
-    echo "Installing Helm..."
-
     curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 \
       -o get-helm-3
     bash get-helm-3
@@ -222,7 +229,6 @@ resource "aws_instance" "eks_access_host" {
     dnf install -y aspnetcore-runtime-10.0
 
     # Install GHA Runner
-
     mkdir -p /opt/actions-runner
     curl -fsSL https://github.com/actions/runner/releases/download/v2.338.2/actions-runner-linux-x64-2.338.2.tar.gz \
       -o actions-runner-linux-x64-2.338.2.tar.gz

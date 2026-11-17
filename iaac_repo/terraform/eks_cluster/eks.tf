@@ -152,7 +152,7 @@ resource "aws_eks_pod_identity_association" "eso" {
   cluster_name    = aws_eks_cluster.main.name
   namespace       = "external-secrets"
   service_account = "external-secrets"
-  role_arn        = aws_iam_role.eso_pod_role.arn
+  role_arn        = aws_iam_role.file_api_pod_role.arn
 }
 
 #--VPC CNI
