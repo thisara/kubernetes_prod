@@ -66,6 +66,10 @@ module "eks_cluster" {
   tags = var.tags
 }
 
+module "aws_resources" {
+  source = "./aws_resources"
+}
+
 module "devops_access" {
   source = "./devops_access"
 

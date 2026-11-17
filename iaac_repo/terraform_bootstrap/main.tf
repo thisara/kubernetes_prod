@@ -20,6 +20,11 @@ resource "aws_iam_policy" "s3" {
   policy = data.aws_iam_policy_document.s3.json
 }
 
+resource "aws_iam_policy" "sm" {
+  name   = "${var.role_name}-sm"
+  policy = data.aws_iam_policy_document.sm.json
+}
+
 /*resource "aws_iam_policy" "boundary" {
   name   = "${var.role_name}-created-role-boundary"
   policy = data.aws_iam_policy_document.boundary.json
@@ -36,6 +41,7 @@ resource "aws_iam_role_policy_attachment" "execution" {
     network = aws_iam_policy.network.arn
     s3      = aws_iam_policy.s3.arn
     iam     = aws_iam_policy.iam.arn
+    sm      = aws_iam_policy.sm.arn
   }
   role       = aws_iam_role.terraform_prod.name
   policy_arn = each.value

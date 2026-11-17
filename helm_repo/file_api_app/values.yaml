@@ -35,7 +35,7 @@ externalSecrets:
   region: ap-southeast-2
   refreshInterval: 1h
   secretKey: AWS_S3_ENC
-  remoteKey: encryption-key
+  remoteKey: AWS_S3_ENC
   # Leave empty for a plaintext secret; set to AWS_S3_ENC for a JSON secret.
   property: ""
 

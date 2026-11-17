@@ -214,6 +214,25 @@ data "aws_iam_policy_document" "boundary" {
   }
 }
 
+#aws secrets_manager
+data "aws_iam_policy_document"  "sm" {
+  statement {
+    sid = "ManageApplicationSecrets"
+    effect = "Allow"
+    actions = [
+      "secretsmanager:CreateSecret",
+      "secretsmanager:DescribeSecret",
+      "secretsmanager:UpdateSecret",
+      "secretsmanager:DeleteSecret",
+      "secretsmanager:RestoreSecret",
+      "secretsmanager:TagResource",
+      "secretsmanager:UntagResource",
+      "secretsmanager:GetResourcePolicy"
+    ]
+    resources = ["arn:aws:secretsmanager:${var.aws_region}:${var.account_id}:secret:AWS_S3_ENC-*"]
+  }
+}
+
 #aws iam policy
 data "aws_iam_policy_document" "iam" {
   statement {
@@ -344,3 +363,4 @@ data "aws_iam_policy_document" "iam" {
     resources = ["arn:aws:iam::731770490737:oidc-provider/token.actions.githubusercontent.com"]
   }
 }
+
